@@ -4,6 +4,33 @@ document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
     // ===================================
+    // Dark Mode Toggle
+    // ===================================
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Check for saved theme preference or default to light mode
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+    }
+
+    // Toggle dark mode
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+
+            // Save theme preference
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+
+    // ===================================
     // Navigation Functionality
     // ===================================
 

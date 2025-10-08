@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kubectl - DevOps 전문 기업</title>
-    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/linear-theme.css">
 </head>
 <body>
@@ -15,11 +15,16 @@
                 <a href="#home" class="logo">
                     <i class="fas fa-dharmachakra"></i> Kubectl
                 </a>
-                <button class="mobile-toggle" id="mobile-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <div class="nav-controls">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="다크모드 토글">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-toggle" id="mobile-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
                 <ul class="nav-menu" id="nav-menu">
                     <li><a href="#home" class="nav-link active">홈</a></li>
                     <li><a href="#services" class="nav-link">서비스</a></li>

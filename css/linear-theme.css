@@ -5,7 +5,7 @@
 
 /* CSS Variables */
 :root {
-    /* DevOps Theme Colors - Linear Style */
+    /* DevOps Theme Colors - Linear Style (Light Mode) */
     --primary-color: #326ce5;        /* Kubernetes Blue */
     --secondary-color: #00d4aa;      /* Cyan Accent */
     --dark-bg: #0a1929;              /* Dark Navy */
@@ -18,12 +18,31 @@
     --accent-purple: #7c4dff;
     --success-green: #00e676;
 
+    /* Light mode specific */
+    --body-bg: #f8f9fa;
+    --body-text: #1a1a1a;
+    --card-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --navbar-bg: rgba(10, 25, 41, 0.95);
+
     /* Spacing */
     --section-padding: 100px 0;
     --container-width: 1200px;
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --body-bg: #0a1929;
+    --body-text: #ffffff;
+    --card-bg: #132f4c;
+    --border-color: #1e3a5f;
+    --light-bg: #0a1929;
+    --text-dark: #ffffff;
+    --text-secondary: #90caf9;
+    --navbar-bg: rgba(5, 19, 33, 0.95);
 }
 
 /* Reset & Base Styles */
@@ -36,9 +55,10 @@
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     line-height: 1.6;
-    color: var(--text-dark);
-    background: var(--light-bg);
+    color: var(--body-text);
+    background: var(--body-bg);
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -55,7 +75,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(10, 25, 41, 0.95);
+    background: var(--navbar-bg);
     backdrop-filter: blur(10px);
     z-index: 1000;
     padding: 15px 0;
@@ -65,13 +85,27 @@ body {
 
 .navbar.scrolled {
     padding: 10px 0;
-    background: rgba(10, 25, 41, 0.98);
+    background: var(--navbar-bg);
 }
 
 .nav-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 40px;
+}
+
+.nav-wrapper .logo {
+    flex: 0 0 auto;
+}
+
+.nav-wrapper .nav-menu {
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-wrapper .nav-controls {
+    flex: 0 0 auto;
 }
 
 .logo {
@@ -123,6 +157,41 @@ body {
 .nav-link:hover::after,
 .nav-link.active::after {
     width: 100%;
+}
+
+/* Theme Toggle & Navigation Controls */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 18px;
+    transition: var(--transition-smooth);
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.theme-toggle i {
+    transition: var(--transition-smooth);
+}
+
+body.dark-mode .theme-toggle i::before {
+    content: "\f185"; /* fa-sun */
 }
 
 .mobile-toggle {
@@ -576,12 +645,12 @@ section {
 }
 
 .service-card {
-    background: white;
+    background: var(--card-bg);
     padding: 40px 30px;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     transition: var(--transition-smooth);
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color);
 }
 
 .service-card:hover {
@@ -643,7 +712,7 @@ section {
    Solutions Section
    =================================== */
 .solutions {
-    background: white;
+    background: var(--card-bg);
 }
 
 .solutions-content {
@@ -793,7 +862,7 @@ section {
 .stat-item {
     text-align: center;
     padding: 30px;
-    background: white;
+    background: var(--card-bg);
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
@@ -818,7 +887,7 @@ section {
 }
 
 .timeline-item {
-    background: white;
+    background: var(--card-bg);
     border-radius: 16px;
     padding: 35px 40px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -872,7 +941,7 @@ section {
    Contact Section
    =================================== */
 .contact {
-    background: white;
+    background: var(--card-bg);
 }
 
 .contact-content {
@@ -944,7 +1013,7 @@ section {
     font-size: 15px;
     font-family: inherit;
     transition: var(--transition-smooth);
-    background: white;
+    background: var(--card-bg);
 }
 
 .form-group input:focus,
