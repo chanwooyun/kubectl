@@ -1,6 +1,6 @@
 // Modern DevOps Theme JavaScript
 
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
     // ===================================
@@ -314,4 +314,4 @@
         heroSection.addEventListener('mouseleave', startAutoPlay);
     }
 
-})();
+});
