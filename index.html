@@ -34,7 +34,30 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="hero-background"></div>
+        <!-- Background Carousel -->
+        <div class="hero-carousel">
+            <div class="hero-slide active" data-slide="1"></div>
+            <div class="hero-slide" data-slide="2"></div>
+            <div class="hero-slide" data-slide="3"></div>
+        </div>
+
+        <!-- Carousel Controls -->
+        <div class="carousel-controls">
+            <button class="carousel-prev" id="hero-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-next" id="hero-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators">
+            <span class="indicator active" data-slide="1"></span>
+            <span class="indicator" data-slide="2"></span>
+            <span class="indicator" data-slide="3"></span>
+        </div>
+
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title animate-fade-in">
