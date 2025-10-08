@@ -277,21 +277,16 @@
     // ===================================
 
     const heroSlides = document.querySelectorAll('.hero-slide');
-    const indicators = document.querySelectorAll('.carousel-indicators .indicator');
-    const prevBtn = document.getElementById('hero-prev');
-    const nextBtn = document.getElementById('hero-next');
 
     let currentSlide = 0;
     let autoPlayInterval;
 
     function showSlide(index) {
-        // Remove active class from all slides and indicators
+        // Remove active class from all slides
         heroSlides.forEach(slide => slide.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
 
-        // Add active class to current slide and indicator
+        // Add active class to current slide
         heroSlides[index].classList.add('active');
-        indicators[index].classList.add('active');
 
         currentSlide = index;
     }
@@ -301,44 +296,13 @@
         showSlide(next);
     }
 
-    function prevSlide() {
-        let prev = (currentSlide - 1 + heroSlides.length) % heroSlides.length;
-        showSlide(prev);
-    }
-
     function startAutoPlay() {
-        autoPlayInterval = setInterval(nextSlide, 6000); // Change slide every 6 seconds
+        autoPlayInterval = setInterval(nextSlide, 7000); // Change slide every 7 seconds
     }
 
     function stopAutoPlay() {
         clearInterval(autoPlayInterval);
     }
-
-    // Navigation controls
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            nextSlide();
-            stopAutoPlay();
-            startAutoPlay(); // Restart autoplay
-        });
-    }
-
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            prevSlide();
-            stopAutoPlay();
-            startAutoPlay(); // Restart autoplay
-        });
-    }
-
-    // Indicator controls
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            showSlide(index);
-            stopAutoPlay();
-            startAutoPlay(); // Restart autoplay
-        });
-    });
 
     // Start autoplay
     startAutoPlay();
