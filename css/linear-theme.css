@@ -1139,6 +1139,15 @@ section {
 }
 
 @media (max-width: 768px) {
+    .nav-wrapper {
+        position: relative;
+    }
+
+    .nav-wrapper .nav-menu {
+        flex: none;
+        justify-content: flex-start;
+    }
+
     .mobile-toggle {
         display: flex;
     }
@@ -1148,7 +1157,7 @@ section {
         top: 100%;
         left: 0;
         right: 0;
-        background: var(--dark-bg);
+        background: var(--navbar-bg);
         flex-direction: column;
         gap: 0;
         padding: 20px;
@@ -1156,6 +1165,7 @@ section {
         opacity: 0;
         pointer-events: none;
         transition: var(--transition-smooth);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .nav-menu.active {
