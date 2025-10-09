@@ -13,5 +13,10 @@
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "chrome-devtools",
+    "shadcn"
+  ]
 }
