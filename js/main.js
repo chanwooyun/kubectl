@@ -1,344 +1,180 @@
-// Modern DevOps Theme JavaScript
+// Tech-First DevOps Theme JavaScript
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
     // ===================================
-    // Dark Mode Toggle
+    // Terminal Typing Animation
     // ===================================
+    const terminalContent = document.getElementById('terminal-content');
 
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
+    const commands = [
+        { type: 'input', text: 'kubectl get pods --namespace=production' },
+        { type: 'output', text: 'NAME                              READY   STATUS    RESTARTS   AGE\napi-gateway-7f8b9c4d5e-x1y2z      1/1     Running   0          2d\nauth-service-6a5b4c3d2e-a1b2c     1/1     Running   0          2d\ndatabase-primary-0                1/1     Running   0          5d' },
+        { type: 'input', text: 'terraform plan' },
+        { type: 'output', text: 'Terraform used the selected providers to generate the following execution plan.\n\n  + aws_eks_node_group.main\n      id:                    <computed>\n      cluster_name:          "production-cluster"\n      node_role_arn:         "arn:aws:iam::123456789012:role/eks-node-role"\n      scaling_config.0.max_size: 10\n      scaling_config.0.min_size: 3\n\nPlan: 1 to add, 0 to change, 0 to destroy.' },
+        { type: 'input', text: 'git push origin main' },
+        { type: 'output', text: 'Enumerating objects: 15, done.\nCounting objects: 100% (15/15), done.\nDelta compression using up to 8 threads\nCompressing objects: 100% (8/8), done.\nWriting objects: 100% (9/9), 1.24 KiB | 1.24 MiB/s, done.\nTotal 9 (delta 6), reused 0 (delta 0)\nTo github.com:kubectl/infrastructure.git\n   8a2b3c...9d8e7f  main -> main' }
+    ];
 
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        body.classList.add('dark-mode');
+    let cmdIndex = 0;
+    let charIndex = 0;
+    let isTyping = false;
+    let currentLine = null;
+
+    function createPrompt() {
+        const line = document.createElement('div');
+        line.className = 'cmd-line';
+        line.innerHTML = '<span class="cmd-prompt">user@kubectl:~$</span> <span class="cmd-text"></span><span class="cursor">&nbsp;</span>';
+        terminalContent.appendChild(line);
+        return line.querySelector('.cmd-text');
     }
 
-    // Toggle dark mode
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            body.classList.toggle('dark-mode');
-
-            // Save theme preference
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    }
-
-    // ===================================
-    // Navigation Functionality
-    // ===================================
-
-    // Navbar scroll effect
-    const navbar = document.getElementById('navbar');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const mobileToggle = document.getElementById('mobile-toggle');
-    const navMenu = document.getElementById('nav-menu');
-
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+    function typeCommand() {
+        if (cmdIndex >= commands.length) {
+            cmdIndex = 0; // Loop
+            terminalContent.innerHTML = '';
+            setTimeout(startNextCommand, 1000);
+            return;
         }
 
-        // Update active nav link based on scroll position
-        updateActiveNavLink();
-    });
+        const cmd = commands[cmdIndex];
 
-    // Mobile menu toggle
-    if (mobileToggle) {
-        mobileToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-
-            // Animate hamburger menu
-            const spans = this.querySelectorAll('span');
-            spans.forEach((span, index) => {
-                if (navMenu.classList.contains('active')) {
-                    if (index === 0) span.style.transform = 'rotate(45deg) translateY(8px)';
-                    if (index === 1) span.style.opacity = '0';
-                    if (index === 2) span.style.transform = 'rotate(-45deg) translateY(-8px)';
-                } else {
-                    span.style.transform = 'none';
-                    span.style.opacity = '1';
-                }
-            });
-        });
-    }
-
-    // Smooth scrolling for navigation links
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-
-            if (targetSection) {
-                const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
+        if (cmd.type === 'input') {
+            if (!currentLine) {
+                currentLine = createPrompt();
+                // Remove previous cursors
+                const cursors = terminalContent.querySelectorAll('.cursor');
+                cursors.forEach((c, i) => {
+                    if (i < cursors.length - 1) c.style.display = 'none';
                 });
-
-                // Close mobile menu if open
-                navMenu.classList.remove('active');
-
-                // Reset mobile toggle icon
-                if (mobileToggle) {
-                    const spans = mobileToggle.querySelectorAll('span');
-                    spans.forEach(span => {
-                        span.style.transform = 'none';
-                        span.style.opacity = '1';
-                    });
-                }
             }
-        });
-    });
 
-    // Update active nav link based on scroll position
-    function updateActiveNavLink() {
-        const sections = document.querySelectorAll('section');
-        let current = '';
-
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.offsetHeight;
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    }
-
-    // ===================================
-    // Counter Animation
-    // ===================================
-
-    function animateCounter(element) {
-        const target = parseInt(element.getAttribute('data-target'));
-        const duration = 2000; // 2 seconds
-        const increment = target / (duration / 16); // 60 FPS
-        let current = 0;
-
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                element.textContent = target;
-                clearInterval(timer);
+            if (charIndex < cmd.text.length) {
+                currentLine.textContent += cmd.text.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeCommand, 50 + Math.random() * 50); // Random typing speed
             } else {
-                element.textContent = Math.floor(current);
+                charIndex = 0;
+                cmdIndex++;
+                currentLine = null;
+                setTimeout(startNextCommand, 500);
             }
-        }, 16);
+        } else {
+            // Output is instant
+            const output = document.createElement('div');
+            output.className = 'cmd-output';
+            output.textContent = cmd.text;
+            terminalContent.appendChild(output);
+
+            // Scroll to bottom
+            const terminalBody = document.querySelector('.terminal-body');
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+
+            cmdIndex++;
+            setTimeout(startNextCommand, 500);
+        }
     }
 
-    // Intersection Observer for counter animation
-    const statNumbers = document.querySelectorAll('.stat-number');
-    const counterObserver = new IntersectionObserver((entries) => {
+    function startNextCommand() {
+        typeCommand();
+    }
+
+    // Start the animation
+    setTimeout(startNextCommand, 1000);
+
+
+    // ===================================
+    // Stats Counter
+    // ===================================
+    const statValues = document.querySelectorAll('.stat-value');
+
+    const observerOptions = {
+        threshold: 0.5
+    };
+
+    const statsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && entry.target.textContent === '0') {
                 animateCounter(entry.target);
             }
         });
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
-
-    statNumbers.forEach(stat => {
-        counterObserver.observe(stat);
-    });
-
-    // ===================================
-    // Form Handling
-    // ===================================
-
-    const contactForm = document.getElementById('contactForm');
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-
-            // Simple validation
-            if (name && email && subject && message) {
-                // Show success message (you would integrate with backend here)
-                alert('메시지가 성공적으로 전송되었습니다! 빠른 시일 내에 답변 드리겠습니다.');
-                contactForm.reset();
-            } else {
-                alert('모든 필드를 입력해주세요.');
-            }
-        });
-    }
-
-    // ===================================
-    // Scroll Reveal Animation
-    // ===================================
-
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const scrollObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
     }, observerOptions);
 
-    // Observe elements for scroll animation
-    const animatedElements = document.querySelectorAll('.service-card, .solution-item, .process-step, .timeline-item');
+    statValues.forEach(stat => statsObserver.observe(stat));
 
-    animatedElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        scrollObserver.observe(element);
-    });
+    function animateCounter(element) {
+        const target = parseFloat(element.getAttribute('data-target'));
+        const duration = 2000;
+        const start = 0;
+        const startTime = performance.now();
 
-    // ===================================
-    // Floating Cards Animation (Hero Section)
-    // ===================================
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
 
-    const floatingCards = document.querySelectorAll('.floating-card');
+            // Ease out quart
+            const ease = 1 - Math.pow(1 - progress, 4);
 
-    floatingCards.forEach((card, index) => {
-        // Add slight random movement
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) scale(1.05)';
-        });
+            const current = start + (target - start) * ease;
 
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-
-    // ===================================
-    // Smooth Page Load
-    // ===================================
-
-    window.addEventListener('load', function() {
-        document.body.style.opacity = '0';
-        setTimeout(() => {
-            document.body.style.transition = 'opacity 0.5s ease';
-            document.body.style.opacity = '1';
-        }, 100);
-    });
-
-    // ===================================
-    // Parallax Effect for Hero Background
-    // ===================================
-
-    const heroBackground = document.querySelector('.hero-background');
-
-    if (heroBackground) {
-        window.addEventListener('scroll', function() {
-            const scrolled = window.scrollY;
-            const heroHeight = document.querySelector('.hero').offsetHeight;
-
-            if (scrolled < heroHeight) {
-                heroBackground.style.transform = `translateY(${scrolled * 0.5}px)`;
+            if (Number.isInteger(target)) {
+                element.textContent = Math.floor(current);
+            } else {
+                element.textContent = current.toFixed(2);
             }
-        });
-    }
 
-    // ===================================
-    // Performance Stats Tooltip
-    // ===================================
-
-    const statItems = document.querySelectorAll('.stat-item');
-
-    statItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px) scale(1.05)';
-        });
-
-        item.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-
-    // ===================================
-    // Typing Effect for Hero Title (Optional)
-    // ===================================
-
-    function typeEffect(element, text, speed = 50) {
-        let i = 0;
-        element.textContent = '';
-
-        function type() {
-            if (i < text.length) {
-                element.textContent += text.charAt(i);
-                i++;
-                setTimeout(type, speed);
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                element.textContent = target; // Ensure final value is exact
             }
         }
 
-        type();
+        requestAnimationFrame(update);
     }
-
-    // Uncomment to enable typing effect
-    // const heroTitle = document.querySelector('.hero-title');
-    // if (heroTitle) {
-    //     const originalText = heroTitle.textContent;
-    //     typeEffect(heroTitle, originalText);
-    // }
 
     // ===================================
-    // Hero Carousel
+    // Smooth Scrolling
     // ===================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-    const heroSlides = document.querySelectorAll('.hero-slide');
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        });
+    });
 
-    let currentSlide = 0;
-    let autoPlayInterval;
+    // ===================================
+    // Mobile Menu
+    // ===================================
+    const mobileBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
 
-    function showSlide(index) {
-        // Remove active class from all slides
-        heroSlides.forEach(slide => slide.classList.remove('active'));
-
-        // Add active class to current slide
-        heroSlides[index].classList.add('active');
-
-        currentSlide = index;
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', () => {
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '70px';
+                navLinks.style.left = '0';
+                navLinks.style.width = '100%';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.background = '#050505';
+                navLinks.style.padding = '20px';
+                navLinks.style.borderBottom = '1px solid #222';
+            }
+        });
     }
-
-    function nextSlide() {
-        let next = (currentSlide + 1) % heroSlides.length;
-        showSlide(next);
-    }
-
-    function startAutoPlay() {
-        autoPlayInterval = setInterval(nextSlide, 7000); // Change slide every 7 seconds
-    }
-
-    function stopAutoPlay() {
-        clearInterval(autoPlayInterval);
-    }
-
-    // Start autoplay
-    startAutoPlay();
-
-    // Pause on hover
-    const heroSection = document.querySelector('.hero');
-    if (heroSection) {
-        heroSection.addEventListener('mouseenter', stopAutoPlay);
-        heroSection.addEventListener('mouseleave', startAutoPlay);
-    }
-
 });
