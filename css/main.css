@@ -333,8 +333,24 @@ h4 {
 
 .terminal-body {
     padding: 20px;
-    min-height: 300px;
+    height: 360px;
+    overflow-y: auto;
     color: #CCCCCC;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-active) transparent;
+}
+
+.terminal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+    background-color: var(--border-active);
+    border-radius: 3px;
 }
 
 .cmd-line {
